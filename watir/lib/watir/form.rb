@@ -20,7 +20,7 @@ module Watir
   # wraps around a form OLE object
   class FormWrapper
     include FormAccess
-    def initialize ole_object
+    def initialize(ole_object)
       @ole_object = ole_object
     end
   end
@@ -30,7 +30,7 @@ module Watir
     include FormAccess
     include Container
     
-    attr_accessor :form, :ole_object
+    attr_accessor :form
     
     #   * container   - the containing object, normally an instance of IE
     #   * how         - symbol - how we access the form (:name, :id, :index, :action, :method)
@@ -52,6 +52,9 @@ module Watir
           next unless @ole_object == nil
           
           wrapped = FormWrapper.new(thisForm)
+          
+          log "form on page, name is " + wrapped.name
+          
           @ole_object =
           case @how
           when :name, :id, :method, :action
@@ -61,7 +64,7 @@ module Watir
           else
             raise MissingWayOfFindingObjectException, "#{how} is an unknown way of finding a form (#{what})"
           end
-          count += 1
+          count = count +1
         end
       end
       super(@ole_object)
@@ -74,22 +77,15 @@ module Watir
     end
     alias :exist? :exists?
     
-    def assert_exists
-      unless exists?
-        raise UnknownFormException, 
-          "Unable to locate a form using #{@how} and #{@what}" 
-      end
-    end
-    
     # Submit the data -- equivalent to pressing Enter or Return to submit a form.
-    def submit 
-      assert_exists
+    def submit # XXX use assert_exists
+      raise UnknownFormException, "Unable to locate a form using #{@how} and #{@what} " if @ole_object == nil
       @ole_object.invoke('submit')
       @container.wait
     end
     
-    def ole_inner_elements
-      assert_exists
+    def ole_inner_elements # XXX use assert_exists
+      raise UnknownFormException, "Unable to locate a form using #{@how} and #{@what} " if @ole_object == nil
       @ole_object.elements
     end
     private :ole_inner_elements
@@ -158,9 +154,8 @@ module Watir
   class Forms < ElementCollections
     def element_class; Form; end
     def element_tag; 'FORM'; end
-    def length
-      @container.document.getElementsByTagName("FORM").length
-    end
+    def length;
+@container.document.getElementsByTagName("FORM").length; end
   end
 
   module Container

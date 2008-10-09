@@ -1,4 +1,6 @@
-require 'test/unit'
+# this file needs to be loaded before 'test/unit' to ensure that our
+# test runner is used instead (defined in the at_exit block below).
+
 require 'test/unit/collector/objectspace'
 
 # Modify the Test::Unit runner in Eclipse, so it only runs our tests
@@ -16,7 +18,6 @@ end
 at_exit do
   unless $! || Test::Unit.run?
     runner = Test::Unit::AutoRunner.new false
-    runner.process_args ARGV
     runner.filters = Watir::UnitTest.filter 
     exit runner.run
   end
