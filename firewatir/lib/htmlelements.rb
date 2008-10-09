@@ -1513,7 +1513,6 @@ module FireWatir
       return @o.checked
     end
     alias getState isSet?
-    alias checked? isSet?
     
     #
     # Description:
@@ -1546,8 +1545,10 @@ module FireWatir
     #   Used by clear and set method to uncheck and check radio button and checkbox element respectively.
     #
     def set_clear_item(set)
-      @o.fire_event("onclick") 
-      @container.wait
+      if set != @o.isSet?
+        @o.fire_event("onclick") 
+        @container.wait
+      end
     end
     private :set_clear_item
     
@@ -1900,10 +1901,5 @@ module FireWatir
     TAG = 'AREA'
   end
   class Areas < ElementCollections; end
-
-  class Body < NonControlElement
-    TAG = 'TBODY'
-  end
-  class Bodies < ElementCollections; end
     
 end
