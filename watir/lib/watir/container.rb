@@ -50,7 +50,7 @@ module Watir
     
     # Determine the how and what when defaults are possible.
     def process_default(default_attribute, how, what)
-      if what.nil? && String === how
+      if how.class == String && what == nil
         what = how
         how = default_attribute
       end
@@ -331,7 +331,7 @@ module Watir
     #    ie.select_list(:name, /n_/)                       # access the first select box whose name matches n_
     #    ie.select_list(:index, 2)                         # access the second select box on the page (1 based, so the first field is accessed with :index,1)
     #    ie.select(:xpath, "//select[@id='currency']/")    # access the select box with an id of currency
-    def select_list(how, what=nil)
+    def select_list(how, what)
       SelectList.new(self, how, what)
     end
     
@@ -374,7 +374,7 @@ module Watir
     #    ie.checkbox(:id, 'day_to_send', 'monday')         # access the check box with an id of day_to_send and a value of monday
     #    ie.checkbox(:name,'email_frequency', 'weekly')    # access the check box with a name of email_frequency and a value of 'weekly'
     #    ie.checkbox(:xpath, "//input[@name='email_frequency' and @value='daily']/")     # access the checkbox with a name of email_frequency and a value of 'daily'
-    def checkbox(how, what=nil, value=nil)
+    def checkbox(how, what, value=nil)
       CheckBox.new(self, how, what, ["checkbox"], value)
     end
     
@@ -416,7 +416,7 @@ module Watir
     #    ie.radio(:id, 'day_to_send', 'monday')         # access the radio button with an id of day_to_send and a value of monday
     #    ie.radio(:name,'email_frequency', 'weekly')     # access the radio button with a name of email_frequency and a value of 'weekly'
     #    ie.radio(:xpath, "//input[@name='email_frequency' and @value='daily']/")     # access the radio button with a name of email_frequency and a value of 'daily'
-    def radio(how, what=nil, value=nil)
+    def radio(how, what, value=nil)
       Radio.new(self, how, what, ["radio"], value)
     end
     
@@ -729,7 +729,6 @@ module Watir
       locator.specifier = [how, what, value]
       locator.document = document
       return locator.element if locator.fast_locate
-      # todo: restrict search to elements.getElementsByTag('INPUT'); faster
       locator.elements = ole_inner_elements if locator.elements.nil?
       locator.locate
     end

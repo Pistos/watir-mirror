@@ -202,11 +202,11 @@ module FireWatir
     # Output:
     #   Button element.
     #
-    def button(how, what=nil)
+    def button(how, what = nil)
         locate if defined?(locate)
-        if what.nil? && String === how
-          what = how
-          how = :value
+        if(what == nil)
+            what = how
+            how = :value
         end    
         Button.new(self, how, what)
     end    
@@ -320,7 +320,7 @@ module FireWatir
     # Output:
     #   Checkbox object.
     #
-    def checkbox(how, what=nil, value = nil) 
+    def checkbox(how, what, value = nil) 
         locate if defined?(locate)
         return CheckBox.new(self, how, what, value) 
     end
@@ -351,7 +351,7 @@ module FireWatir
     # Output:
     #   Radio button object.
     #
-    def radio(how, what=nil, value = nil) 
+    def radio(how, what, value = nil) 
         locate if defined?(locate)
         return Radio.new(self, how, what, value) 
     end
